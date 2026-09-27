@@ -12,7 +12,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description='Upload an image to Files Manager.')
     parser.add_argument('file', type=Path, help='Path to the image to upload')
     parser.add_argument('token', help='Authentication token')
-    parser.add_argument('parent_id', nargs='?', default='0', help='Parent folder ID')
+    parser.add_argument('parent_id', nargs='?', default=None, help='Parent folder ID')
     parser.add_argument(
         '--api-url',
         default='http://127.0.0.1:5000/files',
@@ -36,8 +36,10 @@ def upload_image(args):
         'type': 'image',
         'isPublic': True,
         'data': encode_file(args.file),
-        'parentId': args.parent_id,
     }
+    if args.parent_id:
+        payload['parentId'] = args.parent_id
+
     headers = {'X-Token': args.token}
 
     response = requests.post(
